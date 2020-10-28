@@ -21,35 +21,36 @@ namespace PictureMover
 
         public void MoveAll()
         {
-            foreach(Folder folder in Folders)
+            foreach (Folder folder in Folders)
             {
-                DirectoryInfo fromDirectoryInfo = new DirectoryInfo(folder.From);
-                DirectoryInfo toDirectoryInfo = new DirectoryInfo(folder.To);
-
-                if (!fromDirectoryInfo.Exists)
+                if (!new DirectoryInfo(folder.From).Exists)
                 {
                     throw new Exception("From directory does not exist");
                 }
 
-                if (!toDirectoryInfo.Exists)
+                if (!new DirectoryInfo(folder.To).Exists)
                 {
                     Directory.CreateDirectory(folder.To);
                 }
 
-                MoveFiles(folder, toDirectoryInfo);
+                MoveFiles(folder);
             }
         }
 
-        private void MoveFiles(Folder folder, DirectoryInfo toDirectoryInfo)
+        private void MoveFiles(Folder folder)
         {
-            List<string> files = Directory.GetFiles(folder.To, "*.*", SearchOption.TopDirectoryOnly).ToList();
+            List<string> files = Directory.GetFiles(folder.From, "*.*", SearchOption.AllDirectories).ToList();
+            Console.WriteLine("Suche nach Dateien in Pfad: " + folder.From);
+            Console.WriteLine("Anzahl gefundener Dateien: " + files.Count);
 
             foreach (string file in files)
             {
                 FileInfo fileInfo = new FileInfo(file);
-                if (!new FileInfo(toDirectoryInfo + "\\" + fileInfo.Name).Exists)
+                if (!new FileInfo(folder.To + "\\" + fileInfo.Name).Exists)
                 {
-                    fileInfo.MoveTo(toDirectoryInfo + "\\" + fileInfo.Name);
+                    string fileName = folder.To + "\\" + fileInfo.Name;
+                    fileInfo.MoveTo(fileName);
+                    Console.WriteLine("File moved to: " + fileName);
                 }
             }
         }
