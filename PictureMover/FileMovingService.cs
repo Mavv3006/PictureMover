@@ -23,17 +23,21 @@ namespace PictureMover
         {
             foreach (Folder folder in Folders)
             {
-                if (!new DirectoryInfo(folder.From).Exists)
-                {
-                    throw new Exception("From directory does not exist");
-                }
-
-                if (!new DirectoryInfo(folder.To).Exists)
-                {
-                    Directory.CreateDirectory(folder.To);
-                }
-
+                MakeSureTheFolderExist(folder);
                 MoveFiles(folder);
+            }
+        }
+
+        private void MakeSureTheFolderExist(Folder folder)
+        {
+            if (!new DirectoryInfo(folder.From).Exists)
+            {
+                throw new Exception("From directory does not exist");
+            }
+
+            if (!new DirectoryInfo(folder.To).Exists)
+            {
+                Directory.CreateDirectory(folder.To);
             }
         }
 

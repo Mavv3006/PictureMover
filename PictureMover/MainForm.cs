@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace PictureMover
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private Folder Folder = new Folder();
         private IFileMovingService FileMovingService = new FileMovingService();
 
         private Label GeneratedLabel;
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -30,26 +31,16 @@ namespace PictureMover
 
         private void From_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog.Description = "Wähle den Startordner aus";
-            OpenExplorer(Folder.Direction.From);
+            FolderBrowserDialog.Description = Constants.DefaultFromFolderText;
+            Folder.From = Util.OpenExplorer(FolderBrowserDialog);
             FromLabel.Text = Folder.From;
         }
 
         private void To_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog.Description = "Wähle den Zielordner aus";
-            OpenExplorer(Folder.Direction.To);
+            FolderBrowserDialog.Description = Constants.DefaultToFolderText;
+            Folder.To = Util.OpenExplorer(FolderBrowserDialog);
             ToLabel.Text = Folder.To;
-        }
-
-        private void OpenExplorer(Folder.Direction direction)
-        {
-            DialogResult result = FolderBrowserDialog.ShowDialog();
-
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(FolderBrowserDialog.SelectedPath))
-            {
-                Folder.setDirection(direction, FolderBrowserDialog.SelectedPath);
-            }
         }
 
         private void CreateButton_Click(object sender, EventArgs e)
@@ -57,12 +48,21 @@ namespace PictureMover
             Console.WriteLine("CreateButton Clicked");
             GeneratedLabel = new Label();
             GeneratedLabel.AutoSize = true;
-            GeneratedLabel.Location = new System.Drawing.Point(ToLabel.Location.X, ToLabel.Location.Y + 25);
+            GeneratedLabel.Location = new Point(ToLabel.Location.X, ToLabel.Location.Y + 25);
             GeneratedLabel.Name = "GeneratedLabel";
-            GeneratedLabel.Size = new System.Drawing.Size(125, 13);
+            GeneratedLabel.Size = new Size(125, 13);
             GeneratedLabel.TabIndex = 3;
             GeneratedLabel.Text = "GeneratedLabel";
             Controls.Add(GeneratedLabel);
+        }
+
+        private void GroupAddingButton_Click(object sender, EventArgs e)
+        {
+            string prompt = "Gebe hier den Namen der neuen Gruppe ein:";
+            string title = "Name für eine weitere Gruppe";
+            string input = Microsoft.VisualBasic.Interaction.InputBox(prompt, title);
+            IGroup group = new Group(input, new Point(150, 150), FolderBrowserDialog);
+            group.Display(Controls);
         }
     }
 }

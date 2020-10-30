@@ -14,20 +14,5 @@
         public Folder()
         {
         }
-
-        public void setDirection(Direction Direction, string Path)
-        {
-            switch (Direction)
-            {
-                case Direction.From:
-                    From = Path;
-                    break;
-                case Direction.To:
-                    To = Path;
-                    break;
-            }
-        }
-
-        public enum Direction { From = 0, To = 1 };
     }
 }
