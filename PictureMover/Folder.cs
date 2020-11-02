@@ -1,9 +1,10 @@
 ﻿namespace PictureMover
 {
-    class Folder
+    public class Folder
     {
         public string From;
         public string To;
+        public string Name;
 
         public Folder(string From, string To)
         {

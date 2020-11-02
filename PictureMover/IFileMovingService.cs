@@ -10,5 +10,7 @@ namespace PictureMover
     {
         public void MoveAll();
         public void AddFolder(Folder folder);
+        public void ConvertToXML();
+        public void ConvertFromXML();
     }
 }

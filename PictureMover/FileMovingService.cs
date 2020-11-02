@@ -7,10 +7,12 @@ namespace PictureMover
 {
     class FileMovingService : IFileMovingService
     {
-        private readonly List<Folder> Folders;
+        private List<Folder> Folders;
+        private readonly ConfigService ConfigService;
 
         public FileMovingService()
         {
+            ConfigService = new ConfigService();
             Folders = new List<Folder>();
         }
 
@@ -19,13 +21,32 @@ namespace PictureMover
             Folders.Add(folder);
         }
 
+        public void ConvertToXML()
+        {
+            ConfigService.ConvertToXML(Folders);
+        }
+
+        public void ConvertFromXML()
+        {
+            Folders = ConfigService.ConvertFromXML();
+        }
+
         public void MoveAll()
         {
             foreach (Folder folder in Folders)
             {
+                if (!CheckFolderIsValid(folder))
+                {
+                    throw new InvalidDataException("Fill in both folders first");
+                }
                 MakeSureTheFolderExist(folder);
                 MoveFiles(folder);
             }
+        }
+
+        private bool CheckFolderIsValid(Folder folder)
+        {
+            return !string.IsNullOrEmpty(folder.From) && !string.IsNullOrEmpty(folder.To);
         }
 
         private void MakeSureTheFolderExist(Folder folder)

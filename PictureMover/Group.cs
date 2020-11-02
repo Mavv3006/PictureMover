@@ -25,7 +25,8 @@ namespace PictureMover
         private static readonly int RowSpacing = 40;
         private static readonly Size ButtonSize = new Size(29, 29);
         private static readonly Size LabelSize = new Size(170, 17);
-        private static readonly Size GroupSize = new Size(250, 2 * (ButtonSize.Height + RowSpacing));
+        public static readonly int GroupHeight = 2 * ButtonSize.Height + RowSpacing;
+        private static readonly Size GroupSize = new Size(250, GroupHeight);
         private static readonly Padding LabelPadding = new Padding(4, 0, 4, 0);
         private static readonly Padding ButtonPadding = new Padding(4);
 
@@ -33,8 +34,8 @@ namespace PictureMover
         {
             GroupLocation = groupLocation;
             GroupName = groupName;
+            Folder.Name = groupName;
             FolderBrowserDialog = folderBrowserDialog;
-            Console.WriteLine("LabelYOffset: {0:D}", LabelYOffset);
             InitFromLabel();
             InitToLabel();
             InitFromButton();
@@ -111,10 +112,11 @@ namespace PictureMover
             try
             {
                 Folder.From = Util.OpenExplorer(FolderBrowserDialog);
+                FromLabel.Text = Folder.From;
             }
             catch (Exception)
             {
-                // nothing happens
+                Console.WriteLine(e);
             }
         }
         private void ToButton_Clicked(object sender, EventArgs e)
@@ -122,10 +124,11 @@ namespace PictureMover
             try
             {
                 Folder.To = Util.OpenExplorer(FolderBrowserDialog);
+                ToLabel.Text = Folder.To;
             }
             catch (Exception)
             {
-                // nothing happens
+                Console.WriteLine(e);
             }
         }
 
