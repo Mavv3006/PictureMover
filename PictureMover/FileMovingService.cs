@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PictureMover
 {
-    class FileMovingService : IFileMovingService
+    class FileMovingService 
     {
         private List<Folder> Folders;
         private readonly ConfigService ConfigService;
@@ -14,6 +14,11 @@ namespace PictureMover
         {
             ConfigService = new ConfigService();
             Folders = new List<Folder>();
+        }
+
+        public List<Folder> GetFolders()
+        {
+            return Folders;
         }
 
         public void AddFolder(Folder folder)
@@ -26,9 +31,9 @@ namespace PictureMover
             ConfigService.ConvertToXML(Folders);
         }
 
-        public void ConvertFromXML()
+        public void InitFromXML()
         {
-            Folders = ConfigService.ConvertFromXML();
+            Folders = ConfigService.InitFromXML();
         }
 
         public void MoveAll()
@@ -65,9 +70,6 @@ namespace PictureMover
         private void MoveFiles(Folder folder)
         {
             List<string> files = Directory.GetFiles(folder.From, "*.*", SearchOption.AllDirectories).ToList();
-            Console.WriteLine("Suche nach Dateien in Pfad: " + folder.From);
-            Console.WriteLine("Anzahl gefundener Dateien: " + files.Count);
-
             foreach (string file in files)
             {
                 FileInfo fileInfo = new FileInfo(file);
@@ -75,7 +77,6 @@ namespace PictureMover
                 {
                     string fileName = folder.To + "\\" + fileInfo.Name;
                     fileInfo.MoveTo(fileName);
-                    Console.WriteLine("File moved to: " + fileName);
                 }
             }
         }

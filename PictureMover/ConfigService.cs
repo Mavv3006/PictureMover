@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -20,8 +17,13 @@ namespace PictureMover
             XmlSerializer = new XmlSerializer(typeof(List<Folder>));
         }
 
-        public List<Folder> ConvertFromXML()
+        public List<Folder> InitFromXML()
         {
+            if (!File.Exists(Path))
+            {
+                throw new FileNotFoundException();
+            }
+
             FileStream fs = new FileStream(Path, FileMode.Open);
             XmlReader reader = XmlReader.Create(fs);
             List<Folder> folders = (List<Folder>)XmlSerializer.Deserialize(reader);

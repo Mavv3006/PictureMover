@@ -4,18 +4,30 @@ using System.Windows.Forms;
 
 namespace PictureMover
 {
-    class Group : IGroup
+    class Group
     {
         private Label ToLabel;
         private Label FromLabel;
         private Button ToButton;
         private Button FromButton;
         private GroupBox Box;
-        private Point GroupLocation;
-        private string GroupName;
-        private FolderBrowserDialog FolderBrowserDialog;
 
-        private readonly Folder Folder = new Folder();
+        private string groupName;
+
+        public Folder Folder = new Folder();
+        public Point GroupLocation;
+
+        public string GroupName
+        {
+            get { return groupName; }
+            set
+            {
+                groupName= value;
+                Folder.Name = value;
+            }
+        }
+
+        private readonly FolderBrowserDialog FolderBrowserDialog;
 
         private static readonly int LabelToButtonYOffset = 10;
         private static readonly int LabelXOffset = 53;
@@ -25,25 +37,55 @@ namespace PictureMover
         private static readonly int RowSpacing = 40;
         private static readonly Size ButtonSize = new Size(29, 29);
         private static readonly Size LabelSize = new Size(170, 17);
-        public static readonly int GroupHeight = 2 * ButtonSize.Height + RowSpacing;
         private static readonly Size GroupSize = new Size(250, GroupHeight);
         private static readonly Padding LabelPadding = new Padding(4, 0, 4, 0);
         private static readonly Padding ButtonPadding = new Padding(4);
 
+        public static readonly int GroupHeight = 2 * ButtonSize.Height + RowSpacing;
+
         public Group(string groupName, Point groupLocation, FolderBrowserDialog folderBrowserDialog)
         {
             GroupLocation = groupLocation;
-            GroupName = groupName;
+            this.groupName = groupName;
             Folder.Name = groupName;
             FolderBrowserDialog = folderBrowserDialog;
+            InitGroup();
+        }
+
+        public Group() { }
+
+        public void SetFolderAndUpdateLabels(Folder folder)
+        {
+            Folder = folder;
+            FromLabel.Text = folder.From;
+            ToLabel.Text = folder.To;
+        }
+
+        #region Init Windows Form elements
+
+        public void Init()
+        {
+            if (!HasEnoughData())
+            {
+                throw new Exception("Provide all the data before initializing a group.");
+            }
+
+            InitGroup();
+        }
+
+        private bool HasEnoughData()
+        {
+            return string.IsNullOrEmpty(GroupName) == false && Folder.IsEmpty == false && GroupLocation.IsEmpty == false;
+        }
+
+        private void InitGroup()
+        {
             InitFromLabel();
             InitToLabel();
             InitFromButton();
             InitToButton();
             InitGroupBox();
         }
-
-        #region Init Windows Form elements
 
         private void InitToLabel()
         {
@@ -142,11 +184,6 @@ namespace PictureMover
             Box.Controls.Add(FromButton);
             controls.Add(Box);
             Console.WriteLine("Group added");
-        }
-
-        public Folder GetFolder()
-        {
-            return Folder;
         }
     }
 }
